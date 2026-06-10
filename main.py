@@ -10,6 +10,31 @@ client = MongoClient(db_url)
 db = client["youtube_manager"]
 video_collections = db["videos"]
 
+def add_video(name, dur):
+
+    name = input("Enter video title : ")
+    dur = input("Enter video duration : ")
+
+    video_details = video_collections.insert_one({
+        'name' : name,
+        'duration' : dur
+    })
+
+    video_id = video_details.inserted_id()
+
+    print(f"Video added to collection ! ")
+    print(f"Name : {name} \nDuration : {dur} \nID : {video_id}")
+
+def view_videos(video_id):
+
+    video_id = input("Enter video id to view : ")
+
+    if video_collections.find_one(video_id):
+        print("Video found : ")
+        print("Details : {video_collections.name} \n{video_collections.dur}")
+    else:
+        print("Video not found ! ")
+    
 
 def main():
     
