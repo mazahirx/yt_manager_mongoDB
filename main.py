@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from bson import ObjectId
 from pymongo import MongoClient
 import os
 
@@ -10,7 +11,7 @@ client = MongoClient(db_url)
 db = client["youtube_manager"]
 video_collections = db["videos"]
 
-def add_video(name, dur):
+def add_video():
 
     name = input("Enter video title : ")
     dur = input("Enter video duration : ")
@@ -20,39 +21,51 @@ def add_video(name, dur):
         'duration' : dur
     })
 
-    video_id = video_details.inserted_id()
+    video_id = video_details.inserted_id
 
     print(f"Video added to collection ! ")
     print(f"Name : {name} \nDuration : {dur} \nID : {video_id}")
 
-def view_videos(video_id):
+def view_videos():
 
     video_id = input("Enter video id to view : ")
 
-    if video_collections.find_one(video_id):
+    if video_collections.find_one({
+        "_id" : ObjectId(video_id)
+    }):
         print("Video found : ")
-        print("Details : {video_collections.name} \n{video_collections.dur}")
+        print("Details : {video_collections['name']} \n{video_collections.['duration']}")
     else:
         print("Video not found ! ")
 
-def edit_video(video_id, new_name, new_dur):
+def edit_video():
 
     video_id = input("Enter video id to edit : ")
 
     if video_collections.find_one(video_id):
         new_name = input("Enter updated video title : ")
         new_dur = input("Enter updated video duration : ")
-        video_collections.update_one(video_id, new_name, new_dur)
+        video_collections.update_one(
+            {"_id" : ObjectId(video_id)},
+            {
+                "$set":{
+                    "name" : new_name,
+                    "duration" : new_dur
+                }
+            }
+        )
         print("Video updated")
     else:
         print("Video not found !")
 
-def delete_video(video_id):
+def delete_video():
 
     video_id = input("Enter video id to delete : ")
 
     if video_collections.find_one(video_id):
-        video_collections.delete_one(video_id)
+        video_collections.delete_one({
+            "_id" : ObjectId(video_id)
+        })
         print("Video deleted")
     else:
         print("Video not found !")
@@ -71,13 +84,13 @@ def main():
         choice = int(input("Chose option : "))
 
         if choice == 1:
-            add_video(name, dur)
+            add_video()
         elif choice == 2:
-            view_videos(video_id)
+            view_videos()
         elif choice == 3:
-            edit_video(video_id, new_name,new_dur)
+            edit_video()
         elif choice == 4:
-            delete_video(video_id)
+            delete_video()
         elif choice == 5:
             break
         else:
