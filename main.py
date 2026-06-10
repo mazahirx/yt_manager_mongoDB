@@ -34,7 +34,28 @@ def view_videos(video_id):
         print("Details : {video_collections.name} \n{video_collections.dur}")
     else:
         print("Video not found ! ")
-    
+
+def edit_video(video_id, new_name, new_dur):
+
+    video_id = input("Enter video id to edit : ")
+
+    if video_collections.find_one(video_id):
+        new_name = input("Enter updated video title : ")
+        new_dur = input("Enter updated video duration : ")
+        video_collections.update_one(video_id, new_name, new_dur)
+        print("Video updated")
+    else:
+        print("Video not found !")
+
+def delete_video(video_id):
+
+    video_id = input("Enter video id to delete : ")
+
+    if video_collections.find_one(video_id):
+        video_collections.delete_one(video_id)
+        print("Video deleted")
+    else:
+        print("Video not found !")
 
 def main():
     
