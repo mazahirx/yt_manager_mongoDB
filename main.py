@@ -5,6 +5,7 @@ import os
 
 load_dotenv()
 
+
 db_url = os.getenv("DATABASE_URL")
 
 client = MongoClient(db_url)
@@ -34,7 +35,7 @@ def view_videos():
         "_id" : ObjectId(video_id)
     }):
         print("Video found : ")
-        print("Details : {video_collections['name']} \n{video_collections.['duration']}")
+        print(f"Details : {video_collections['name']} \n{video_collections['duration']}")
     else:
         print("Video not found ! ")
 
@@ -83,18 +84,21 @@ def main():
 
         choice = int(input("Chose option : "))
 
-        if choice == 1:
-            add_video()
-        elif choice == 2:
-            view_videos()
-        elif choice == 3:
-            edit_video()
-        elif choice == 4:
-            delete_video()
-        elif choice == 5:
-            break
-        else:
-            print("Chose valid option!")
-        
+        try:
+            if choice == 1:
+                add_video()
+            elif choice == 2:
+                view_videos()
+            elif choice == 3:
+                edit_video()
+            elif choice == 4:
+                delete_video()
+            elif choice == 5:
+                break
+            else:
+                print("Chose valid option!")
+        except Exception as e:
+            print("Could'nt connect to database ! ")
+
 if __name__ == "__main__":
     main()
